@@ -1,69 +1,53 @@
 export type SiteConfig = typeof siteConfig;
 
+const navItems = [
+  {
+    label: "首頁",
+    href: "/",
+  },
+  {
+    label: "翻譯模組",
+    href: "/translate",
+  },
+  {
+    label: "資料建檔",
+    href: "/data-collection",
+  },
+  {
+    label: "使用教學",
+    href: "/tutorial",
+  },
+  {
+    label: "銘謝",
+    href: "/credits",
+  },
+  {
+    label: "關於我們",
+    href: "/about",
+  },
+];
+
 export const siteConfig = {
-	name: "Next.js + NextUI",
-	description: "Make beautiful websites regardless of your design experience.",
-	navItems: [
-		{
-			label: "Home",
-			href: "/",
-		},
+  name: "RTranslator",
+  description: "A modern and powerful translation tool for Minecraft mods.",
+  navItems,
+  navMenuItems: [
+    ...navItems,
     {
-      label: "Docs",
-      href: "/docs",
+      label: "個人檔案",
+      href: "/profile",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
+      label: "設定",
+      href: "/settings",
     },
     {
-      label: "Blog",
-      href: "/blog",
+      label: "登出",
+      href: "/logout",
     },
-    {
-      label: "About",
-      href: "/about",
-    }
-	],
-	navMenuItems: [
-		{
-			label: "Profile",
-			href: "/profile",
-		},
-		{
-			label: "Dashboard",
-			href: "/dashboard",
-		},
-		{
-			label: "Projects",
-			href: "/projects",
-		},
-		{
-			label: "Team",
-			href: "/team",
-		},
-		{
-			label: "Calendar",
-			href: "/calendar",
-		},
-		{
-			label: "Settings",
-			href: "/settings",
-		},
-		{
-			label: "Help & Feedback",
-			href: "/help-feedback",
-		},
-		{
-			label: "Logout",
-			href: "/logout",
-		},
-	],
-	links: {
-		github: "https://github.com/nextui-org/nextui",
-		twitter: "https://twitter.com/getnextui",
-		docs: "https://nextui.org",
-		discord: "https://discord.gg/9b6yyZKmH4",
-    sponsor: "https://patreon.com/jrgarciadev"
-	},
+  ],
+  links: {
+    github: "https://github.com/RPMTW",
+    discord: "https://discord.gg/5xApZtgV2u",
+  },
 };

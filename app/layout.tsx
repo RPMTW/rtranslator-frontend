@@ -30,7 +30,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang="zh-TW" suppressHydrationWarning>
 			<head />
 			<body
 				className={clsx(
@@ -39,20 +39,19 @@ export default function RootLayout({
 				)}
 			>
 				<Providers themeProps={{ attribute: "class", defaultTheme: "dark" }}>
-					<div className="relative flex flex-col h-screen">
+					<div className="relative flex flex-col">
 						<Navbar />
-						<main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow">
+						<main className="container mx-auto max-w-7xl px-6 flex-grow">
 							{children}
 						</main>
 						<footer className="w-full flex items-center justify-center py-3">
 							<Link
 								isExternal
 								className="flex items-center gap-1 text-current"
-								href="https://nextui-docs-v2.vercel.app?utm_source=next-app-template"
-								title="nextui.org homepage"
+								href="https://rpmtw.com"
+								title="RPMTW Official Website"
 							>
-								<span className="text-default-600">Powered by</span>
-								<p className="text-primary">NextUI</p>
+								<span className="text-default-600">Copyright © 2023 RPMTW TEAM. All rights reserved.</span>
 							</Link>
 						</footer>
 					</div>
