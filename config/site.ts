@@ -6,12 +6,8 @@ const navItems = [
     href: "/",
   },
   {
-    label: "翻譯模組",
+    label: "翻譯",
     href: "/translate",
-  },
-  {
-    label: "資料建檔",
-    href: "/data-collection",
   },
   {
     label: "使用教學",

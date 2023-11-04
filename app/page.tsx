@@ -10,16 +10,16 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-4 py-8 md:py-4">
       <section className="flex flex-row h-[80vh] items-center justify-center">
-        <div className="inline-block text-center justify-center mr-5">
+        <div className="text-center justify-center mr-5">
           <h1 className={title({ size: "lg", color: "violet" })}>R</h1>
           <h1 className={title({ size: "lg" })}>Translator</h1>
           <br />
-          <h1 className={title({ size: "lg" })}>專為&nbsp;</h1>
-          <h1 className={title({ size: "lg", color: "violet" })}>
-            Minecraft 模組&nbsp;
-          </h1>
+          <h1 className={title({ size: "lg" })}>專為 Minecraft&nbsp;</h1>
+          <h1 className={title({ size: "lg", color: "violet" })}>模組</h1>
           <br />
-          <h1 className={title({ size: "lg" })}>設計的翻譯平臺</h1>
+          <h1 className={title({ size: "lg", className: "mt-2" })}>
+            設計的翻譯平臺
+          </h1>
           <h2 className={subtitle({ class: "mt-4" })}>
             簡潔有力、現代化且貼合模組譯者體驗的翻譯平臺。
           </h2>
