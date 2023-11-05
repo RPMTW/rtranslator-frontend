@@ -88,6 +88,9 @@ function TaskProgress(props: TaskInfo) {
           <Progress
             value={task.progress * 100}
             label={task.stage}
+            color={
+              task.stage === ArchiveTaskStage.Failed ? "danger" : "primary"
+            }
             showValueLabel
           ></Progress>
         ) : (

@@ -23,7 +23,6 @@ export enum ArchiveTaskStage {
   Preparing = "preparing",
   Downloading = "downloading",
   Extracting = "extracting",
-  Parsing = "parsing",
   Saving = "saving",
   Completed = "completed",
   Failed = "failed",
