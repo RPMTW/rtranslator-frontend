@@ -26,10 +26,11 @@ export async function fetchData(
       "Content-Type": "application/json",
       "User-Agent": "RTranslator Frontend",
     },
+    body: options.body ? JSON.stringify(options.body) : undefined,
   });
   if (!response.ok) {
     throw new Error(`Failed to fetch data from ${path}`);
   }
 
-  return response.json();
+  return response;
 }
