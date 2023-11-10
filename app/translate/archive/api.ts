@@ -28,6 +28,17 @@ export enum ArchiveTaskStage {
   Failed = "failed",
 }
 
+export namespace ArchiveTaskStage {
+  export function isFinished(stage: ArchiveTaskStage): boolean {
+    const finishedStages = [
+      ArchiveTaskStage.Completed,
+      ArchiveTaskStage.Failed,
+    ];
+
+    return finishedStages.includes(stage);
+  }
+}
+
 export async function searchResources(
   provider: ArchiveProvider,
   query?: string,

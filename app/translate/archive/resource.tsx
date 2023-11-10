@@ -125,36 +125,20 @@ interface ResourcesListProps {
 }
 
 function ResourcesList(props: ResourcesListProps) {
-  function renderImage(url: string, name: string) {
-    return (
-      <Image
-        className="min-w-fit object-contain"
-        as={NextImage}
-        src={url}
-        alt={`The logo of ${name} mod`}
-        width={48}
-        height={48}
-      ></Image>
-    );
-  }
-
   return (
     <section className="w-full flex flex-col gap-2 p-2">
       <Card>
         {props.resources.map((res) => {
-          const needRenderImage =
-            res.image_url && !res.image_url.endsWith(".gif");
-
           return (
             <CardBody
               key={res.identifier}
               className="h-20 flex flex-row items-center justify-between"
             >
-              {needRenderImage ? (
-                renderImage(res.image_url!, res.name)
-              ) : (
-                <div className="w-[48px] h-[48px] bg-stone-500 rounded-xl"></div>
-              )}
+              <ResourceImage
+                url={res.image_url}
+                name={res.name}
+                size={48}
+              ></ResourceImage>
               <div className="w-2/5 md:w-3/4 flex flex-col mx-5 overflow-x-clip">
                 <span className="truncate">{res.name}</span>
                 <span className="truncate">{res.description}</span>
@@ -177,5 +161,38 @@ function ResourcesList(props: ResourcesListProps) {
         })}
       </Card>
     </section>
+  );
+}
+
+export function ResourceImage({
+  url,
+  name,
+  size,
+}: {
+  url?: string;
+  name: string;
+  size: number;
+}) {
+  const needRenderImage = url && !url.endsWith(".gif");
+
+  if (!needRenderImage) {
+    return (
+      <div
+        className="bg-stone-500 rounded-xl"
+        style={{ minWidth: size, minHeight: size }}
+      ></div>
+    );
+  }
+
+  return (
+    <Image
+      className="min-w-fit object-contain"
+      as={NextImage}
+      src={url}
+      alt={`The logo of ${name} mod`}
+      width={size}
+      height={size}
+      style={{ minWidth: size, minHeight: size }}
+    ></Image>
   );
 }
