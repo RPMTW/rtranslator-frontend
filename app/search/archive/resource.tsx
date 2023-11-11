@@ -58,7 +58,7 @@ export default function SearchResources(props: SearchResourcesProps) {
         }}
       />
       <div
-        className="h-[50vh] flex flex-col overflow-scroll items-center"
+        className="h-[50vh] flex flex-col items-center overflow-scroll scrollbar-hide"
         onScrollCapture={onScrollBottom}
       >
         {data ? (
@@ -81,7 +81,7 @@ interface SearchFilterProps {
 
 function SearchFilter(props: SearchFilterProps) {
   return (
-    <div className="flex flex-row gap-3 justify-center max-h-[4rem]">
+    <div className="flex flex-col sm:flex-row gap-3 justify-center items-center max-h-[4rem] mb-4">
       <Input
         className="h-full max-w-sm"
         classNames={{
@@ -144,13 +144,16 @@ function ResourcesList(props: ResourcesListProps) {
                 <span className="truncate">{res.description}</span>
               </div>
               <Button
-                disabled={res.included_in_database}
+                isDisabled={res.included_in_database}
                 onPress={async () => {
                   props.setTaskInfo({ resource: res });
                   const taskId = await createArchiveTask(
                     props.provider,
                     res.identifier
                   );
+
+                  // In order to show the progress bar animation smoothly, we need to wait for a while.
+                  await new Promise((resolve) => setTimeout(resolve, 300));
                   props.setTaskInfo({ id: taskId, resource: res });
                 }}
               >

@@ -28,7 +28,7 @@ export default function Home() {
         <div className="flex flex-col gap-4 ml-5">
           <Link
             as={NextLink}
-            href="/translate"
+            href="/search"
             className={buttonStyles({
               color: "primary",
               radius: "full",

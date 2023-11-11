@@ -1,3 +1,4 @@
+import { MinecraftMod } from "@/app/translate/api";
 import { HttpMethod, fetchData } from "@/config/api";
 
 export enum ArchiveProvider {
@@ -17,6 +18,7 @@ export interface ArchiveResourceInfo {
 export interface ArchiveTask {
   stage: ArchiveTaskStage;
   progress: number;
+  mc_mod: MinecraftMod;
 }
 
 export enum ArchiveTaskStage {

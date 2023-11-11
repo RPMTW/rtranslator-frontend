@@ -7,7 +7,7 @@ const navItems = [
   },
   {
     label: "翻譯",
-    href: "/translate",
+    href: "/search",
   },
   {
     label: "使用教學",

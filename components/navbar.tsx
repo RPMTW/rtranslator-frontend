@@ -21,11 +21,10 @@ import clsx from "clsx";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, DiscordIcon } from "@/components/icons";
 
-import { Logo } from "@/components/icons";
+import Logo from "@/components/logo";
 import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
-
   return (
     <NextUINavbar maxWidth="xl" position="sticky">
       <NavItems />

@@ -11,7 +11,7 @@ import { Tooltip } from "@nextui-org/tooltip";
 import { Modal, useDisclosure } from "@nextui-org/modal";
 import ArchiveDataModal from "./archive/modal";
 
-export default function TranslatePage() {
+export default function SearchPage() {
   const testCard = (
     <Card
       className="flex flex-row justify-between items-center p-4 mx-4"
