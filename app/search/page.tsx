@@ -13,16 +13,17 @@ import { Link } from "@nextui-org/link";
 import { Progress } from "@nextui-org/progress";
 import { useSearchParams } from "next/navigation";
 
-import { DatabaseMod, searchMods } from "./api";
 import { ResourceImage } from "./archive/resource";
 import ArchiveDataModal from "./archive/modal";
 import { Spinner } from "@nextui-org/spinner";
+import { ModMetadata } from "@/types/minecraft_mod";
+import { searchMods } from "@/api/search";
 
 export default function SearchPage() {
   const [data, setData] = useState<{
     query?: string;
     total_pages: number;
-    paged_mods: Record<number, DatabaseMod[]>;
+    paged_mods: Record<number, ModMetadata[]>;
   }>();
   const [query, setQuery] = useState<string>();
   const [page, setPage] = useState(0);

@@ -14,7 +14,7 @@ import {
   ArchiveResourceInfo,
   createArchiveTask,
   searchResources,
-} from "./api";
+} from "@/api/archive";
 import { TaskInfo } from "./modal";
 
 interface SearchResourcesProps {

@@ -1,9 +1,21 @@
 import { HttpMethod, fetchData } from "@/config/api";
+import { ModMetadata } from "@/types/minecraft_mod";
+import { TextEntry } from "@/types/text_entry";
 
-export interface TextEntry {
-  key: string;
-  value: string;
-  preview_translation: string;
+export interface SearchModResponse {
+  total_pages: number;
+  mods: ModMetadata[];
+}
+
+export async function searchMods(
+  page: number,
+  query?: string
+): Promise<SearchModResponse> {
+  const params: Record<string, string> = { page: page.toString() };
+  if (query) params["query"] = query;
+
+  const res = await fetchData(HttpMethod.GET, "/mods/search", { params });
+  return await res.json();
 }
 
 export interface SearchEntriesResponse {

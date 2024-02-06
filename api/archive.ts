@@ -1,5 +1,5 @@
 import { HttpMethod, fetchData } from "@/config/api";
-import { MinecraftMod } from "../api";
+import { MinecraftMod } from "@/types/minecraft_mod";
 
 export enum ArchiveProvider {
   CurseForge = "curseforge",
@@ -44,7 +44,7 @@ export namespace ArchiveTaskStage {
 export async function searchResources(
   provider: ArchiveProvider,
   page: number,
-  query?: string,
+  query?: string
 ): Promise<ArchiveResourceInfo[]> {
   const params: Record<string, string> = { provider, page: page.toString() };
   if (query) params["query"] = query;
