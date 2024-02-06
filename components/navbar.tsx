@@ -103,7 +103,11 @@ function NavItems() {
             <NextLink
               className={clsx(
                 linkStyles({
-                  color: pathname === item.href ? "primary" : "foreground",
+                  color:
+                    pathname === item.href ||
+                    item.children?.some((child) => pathname.startsWith(child))
+                      ? "primary"
+                      : "foreground",
                 }),
                 "data-[active=true]:text-primary data-[active=true]:font-medium"
               )}

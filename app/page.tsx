@@ -42,7 +42,7 @@ export default function Home() {
             <Link
               as={NextLink}
               className={buttonStyles({ variant: "bordered", radius: "full" })}
-              href="/data-collection"
+              href="/search?modal=data-collection"
             >
               <SearchIcon size={20} />
               建檔更多模組資料

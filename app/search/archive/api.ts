@@ -1,5 +1,5 @@
-import { MinecraftMod } from "@/app/translate/api";
 import { HttpMethod, fetchData } from "@/config/api";
+import { MinecraftMod } from "../api";
 
 export enum ArchiveProvider {
   CurseForge = "curseforge",
@@ -43,14 +43,13 @@ export namespace ArchiveTaskStage {
 
 export async function searchResources(
   provider: ArchiveProvider,
+  page: number,
   query?: string,
-  page?: number
 ): Promise<ArchiveResourceInfo[]> {
-  const params: Record<string, string> = { provider };
+  const params: Record<string, string> = { provider, page: page.toString() };
   if (query) params["query"] = query;
-  if (page) params["page"] = page.toString();
 
-  const res = await fetchData(HttpMethod.GET, "archives/search", { params });
+  const res = await fetchData(HttpMethod.GET, "/archives/search", { params });
   return await res.json();
 }
 
@@ -59,7 +58,7 @@ export async function createArchiveTask(
   identifier: string
 ): Promise<string> {
   const payload = { provider, identifier };
-  const res = await fetchData(HttpMethod.POST, "archives/tasks", {
+  const res = await fetchData(HttpMethod.POST, "/archives/tasks", {
     body: payload,
   });
 
@@ -67,6 +66,6 @@ export async function createArchiveTask(
 }
 
 export async function getArchiveTask(id: string): Promise<ArchiveTask> {
-  const res = await fetchData(HttpMethod.GET, `archives/tasks/${id}`);
+  const res = await fetchData(HttpMethod.GET, `/archives/tasks/${id}`);
   return await res.json();
 }

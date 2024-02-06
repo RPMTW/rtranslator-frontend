@@ -1,13 +1,7 @@
 export default function SearchLayout({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-	return (
-		<section className="flex flex-col gap-4">
-			<div className="inline-block text-center justify-center">
-				{children}
-			</div>
-		</section>
-	);
+  return <section className="lg:w-[65vw]">{children}</section>;
 }

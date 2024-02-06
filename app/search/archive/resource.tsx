@@ -29,30 +29,42 @@ export default function SearchResources(props: SearchResourcesProps) {
     ArchiveProvider.Modrinth
   );
   const page = useRef(0);
+  const fetchLock = useRef(false);
 
   async function onScrollBottom(event: React.UIEvent<HTMLDivElement, UIEvent>) {
     const target = event.target as HTMLDivElement;
-    const hitBottom =
-      target.scrollHeight - target.scrollTop === target.clientHeight;
+    const isCloseToBottom =
+      (target.scrollTop + target.clientHeight) / target.scrollHeight > 0.85;
     const isEnd = data?.length && data.length % 10 !== 0;
 
-    if (hitBottom && !isEnd) {
+    if (isCloseToBottom && !isEnd && !fetchLock.current) {
+      fetchLock.current = true;
       page.current++;
-      const result = await searchResources(provider, query, page.current);
+      const result = await searchResources(provider, page.current, query);
       setData(data?.concat(result));
+
+      fetchLock.current = false;
     }
   }
 
   useEffect(() => {
-    searchResources(provider, query, page.current).then((result) => {
-      setData(result);
+    let ignore = false;
+
+    searchResources(provider, page.current, query).then((result) => {
+      if (!ignore) {
+        setData(result);
+      }
     });
+
+    return () => {
+      ignore = true;
+    };
   }, [query, page, provider]);
 
   return (
     <section hidden={props.hidden}>
       <SearchFilter
-        setQuery={(value) => {
+        onQueryChanged={(value) => {
           page.current = 0;
           setQuery(value);
         }}
@@ -76,7 +88,7 @@ export default function SearchResources(props: SearchResourcesProps) {
 }
 
 interface SearchFilterProps {
-  setQuery: (query: string) => void;
+  onQueryChanged: (query: string) => void;
 }
 
 function SearchFilter(props: SearchFilterProps) {
@@ -94,9 +106,7 @@ function SearchFilter(props: SearchFilterProps) {
         placeholder="搜尋模組..."
         aria-label="Search"
         type="search"
-        onValueChange={(value) => {
-          props.setQuery(value);
-        }}
+        onValueChange={props.onQueryChanged}
       />
       <div className="h-full w-full flex flex-row max-w-[15rem] items-center gap-2">
         <span className="whitespace-nowrap">模組平臺</span>
@@ -140,7 +150,7 @@ function ResourcesList(props: ResourcesListProps) {
                 size={48}
               ></ResourceImage>
               <div className="w-2/5 md:w-3/4 flex flex-col mx-5 overflow-x-clip">
-                <span className="truncate">{res.name}</span>
+                <span className="truncate font-bold">{res.name}</span>
                 <span className="truncate">{res.description}</span>
               </div>
               <Button
