@@ -12,7 +12,7 @@ import { Tooltip } from "@nextui-org/tooltip";
 import { ResourceImage } from "@/app/search/archive/resource";
 import { ModMetadata } from "@/types/minecraft_mod";
 import { TextEntry } from "@/types/text_entry";
-import { searchModEntries } from "@/api/search";
+import { useModEntries } from "@/api/search";
 import { getModMetadata } from "@/api/metadata";
 
 export default function TranslatePage({
@@ -35,7 +35,7 @@ export default function TranslatePage({
 
   return (
     <section className="flex flex-row h-full">
-      <Card className="w-1/4 h-full" radius="none">
+      <Card className="w-1/4 h-full px-4 py-2" radius="none">
         <CardHeader>
           <Skeleton isLoaded={metadata != null} className="rounded-lg w-full">
             <div className="flex flex-row justify-between gap-4">
@@ -66,10 +66,10 @@ export default function TranslatePage({
         </CardHeader>
         <EntriesList mod_id={mod_id} />
       </Card>
-      <Card className="w-2/4" radius="none">
+      <Card className="w-2/4 px-4 py-2" radius="none">
         B
       </Card>
-      <Card className="w-1/4" radius="none">
+      <Card className="w-1/4 px-4 py-2" radius="none">
         C
       </Card>
     </section>
@@ -77,79 +77,69 @@ export default function TranslatePage({
 }
 
 function EntriesList({ mod_id }: { mod_id: number }) {
-  const [data, setData] = useState<{
-    query?: string;
-    total_pages: number;
-    paged_entries: Record<number, TextEntry[]>;
-  }>();
   const [query, setQuery] = useState<string>();
   const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState<number>();
+  const [selected, setSelected] = useState<string>();
 
-  function changePage(page: number) {
-    if (!data) return;
-    if (page < 0) return;
-    if (page >= data.total_pages) return;
+  function Body({ page, cache = false }: { page: number; cache?: boolean }) {
+    const { data, error, isLoading } = useModEntries(mod_id, page, query);
 
-    setPage(page);
-  }
+    useEffect(() => {
+      if (cache) return;
+      if (data) {
+        setTotalPages(data.total_pages);
 
-  useEffect(() => {
-    const skipFetch = data?.paged_entries[page] && data.query === query;
-    if (skipFetch) {
-      return;
-    }
-
-    let ignore = false;
-
-    searchModEntries(mod_id, page, query).then((result) => {
-      if (ignore) {
-        return;
+        if (!selected || !data.entries.map((e) => e.key).includes(selected)) {
+          setSelected(data.entries[0].key);
+        }
       }
+    }, [data, cache]);
 
-      setData((data) => {
-        return {
-          query,
-          total_pages: result.total_pages,
-          paged_entries: { ...data?.paged_entries, [page]: result.entries },
-        };
-      });
-    });
-
-    return () => {
-      ignore = true;
-    };
-  }, [mod_id, page, data, query]);
-
-  const isLoaded = data?.paged_entries[page] !== undefined;
-  const items = data?.paged_entries[page] || [];
-
-  return (
-    <div className="flex h-full flex-col justify-between overflow-y-auto">
+    return (
       <CardBody className="flex flex-col">
-        {isLoaded &&
-          items.map((item) => (
+        {!isLoading &&
+          data?.entries.map((item) => (
             <Button
               key={item.key}
               className="text-md"
-              variant="light"
+              variant={selected === item.key ? "solid" : "light"}
               size="lg"
               radius="sm"
               startContent={
                 <div className="bg-default-500 rounded-sm min-w-unit-3 h-3"></div>
               }
+              onPress={() => setSelected(item.key)}
             >
               <p className="min-w-full overflow-hidden text-ellipsis text-left">
                 {item.value}
               </p>
             </Button>
           ))}
-        {!isLoaded && <Skeleton className="rounded-lg h-full" />}
+        {isLoading && <Skeleton className="rounded-lg h-full" />}
       </CardBody>
+    );
+  }
+
+  function changePage(page: number) {
+    if (!totalPages || page >= totalPages) return;
+    if (page < 0) return;
+
+    setPage(page);
+  }
+
+  return (
+    <div className="flex h-full flex-col justify-between overflow-y-auto">
+      <Body page={page} />
+      <div className="hidden">
+        # Cache next page
+        <Body page={page + 1} cache />
+      </div>
       <CardFooter className="flex justify-center mb-1">
         <ButtonGroup variant="ghost">
           <Button onPress={() => changePage(page - 1)}>上一頁</Button>
           <Button>
-            {page + 1} / {data?.total_pages || 1}
+            {page + 1} / {totalPages || 1}
           </Button>
           <Button onPress={() => changePage(page + 1)}>下一頁</Button>
         </ButtonGroup>

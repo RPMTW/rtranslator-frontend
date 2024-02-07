@@ -5,6 +5,7 @@ import { button as buttonStyles } from "@nextui-org/theme";
 import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
 import { DiscordIcon, SearchIcon } from "@/components/icons";
+import { Button } from "@nextui-org/button";
 
 export default function Home() {
   return (
@@ -26,18 +27,17 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col gap-4 ml-5">
-          <Link
+          <Button
             as={NextLink}
             href="/search"
-            className={buttonStyles({
-              color: "primary",
-              radius: "full",
-              variant: "shadow",
-              size: "lg",
-            })}
+            className="text-lg"
+            color="primary"
+            radius="full"
+            variant="shadow"
+            size="lg"
           >
             立即參與翻譯
-          </Link>
+          </Button>
           <div className="flex justify-center gap-3">
             <Link
               as={NextLink}

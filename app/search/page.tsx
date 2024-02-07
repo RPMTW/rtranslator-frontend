@@ -9,6 +9,7 @@ import { Tooltip } from "@nextui-org/tooltip";
 import { Modal, useDisclosure } from "@nextui-org/modal";
 import { useEffect, useState } from "react";
 import { Link } from "@nextui-org/link";
+import NextLink from "next/link";
 import { Progress } from "@nextui-org/progress";
 import { useSearchParams } from "next/navigation";
 
@@ -16,14 +17,14 @@ import { CurseForgeIcon, ModrinthIcon, SearchIcon } from "@/components/icons";
 import { ResourceImage } from "./archive/resource";
 import ArchiveDataModal from "./archive/modal";
 import { Spinner } from "@nextui-org/spinner";
-import { useSearchMods } from "@/api/search";
+import { useMods } from "@/api/search";
 
 export default function SearchPage() {
   const [query, setQuery] = useState<string>();
   const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState<number>();
 
-  const { data, error, isLoading, mutate } = useSearchMods(page, query);
+  const { data, error, isLoading, mutate } = useMods(page, query);
 
   let openModal = useSearchParams().get("modal") === "data-collection";
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure({
@@ -116,7 +117,8 @@ export default function SearchPage() {
                 </Tooltip>
               </div>
               <Button
-                as={Link}
+                as={NextLink}
+                className="text-md"
                 color="secondary"
                 variant="shadow"
                 href={`/translate/${mod.id}`}
@@ -139,7 +141,7 @@ export default function SearchPage() {
         }}
         openModal={onOpen}
       />
-      {totalPages > 0 && (
+      {totalPages && totalPages > 0 && (
         <Pagination
           total={totalPages}
           initialPage={1}

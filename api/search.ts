@@ -8,7 +8,7 @@ export interface SearchModResponse {
   mods: ModMetadata[];
 }
 
-export function useSearchMods(
+export function useMods(
   page: number,
   query?: string
 ): SWRResponse<SearchModResponse> {
@@ -23,16 +23,16 @@ export interface SearchEntriesResponse {
   entries: TextEntry[];
 }
 
-export async function searchModEntries(
+export function useModEntries(
   mod_id: number,
   page: number,
   query?: string
-): Promise<SearchEntriesResponse> {
+): SWRResponse<SearchEntriesResponse> {
   const params: Record<string, string> = { page: page.toString() };
   if (query) params["query"] = query;
 
-  const res = await fetchData(HttpMethod.GET, `/mods/${mod_id}/entries`, {
-    params,
-  });
-  return await res.json();
+  return useSWR(
+    [HttpMethod.GET, `/mods/${mod_id}/entries`, { params }],
+    fetcher
+  );
 }
