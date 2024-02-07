@@ -1,21 +1,21 @@
-import { HttpMethod, fetchData } from "@/config/api";
+import { HttpMethod, fetchData, fetcher } from "@/config/api";
 import { ModMetadata } from "@/types/minecraft_mod";
 import { TextEntry } from "@/types/text_entry";
+import useSWR, { SWRResponse } from "swr";
 
 export interface SearchModResponse {
   total_pages: number;
   mods: ModMetadata[];
 }
 
-export async function searchMods(
+export function useSearchMods(
   page: number,
   query?: string
-): Promise<SearchModResponse> {
+): SWRResponse<SearchModResponse> {
   const params: Record<string, string> = { page: page.toString() };
   if (query) params["query"] = query;
 
-  const res = await fetchData(HttpMethod.GET, "/mods/search", { params });
-  return await res.json();
+  return useSWR([HttpMethod.GET, "/mods/search", { params }], fetcher);
 }
 
 export interface SearchEntriesResponse {

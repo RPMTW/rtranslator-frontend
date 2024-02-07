@@ -132,6 +132,7 @@ function EntriesList({ mod_id }: { mod_id: number }) {
               key={item.key}
               className="text-md"
               variant="light"
+              size="lg"
               radius="sm"
               startContent={
                 <div className="bg-default-500 rounded-sm min-w-unit-3 h-3"></div>

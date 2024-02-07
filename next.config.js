@@ -6,7 +6,7 @@ const nextConfig = {
         hostname: "cdn.modrinth.com",
       },
     ],
-    },
+  },
 };
 
 module.exports = nextConfig;

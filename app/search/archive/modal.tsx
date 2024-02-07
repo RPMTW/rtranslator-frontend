@@ -19,7 +19,7 @@ import {
   getArchiveTask,
 } from "@/api/archive";
 import SearchResources, { ResourceImage } from "./resource";
-import { MinecraftMod, ModStatus } from "@/types/minecraft_mod.d";
+import { MinecraftMod, ModStatus } from "@/types/minecraft_mod";
 
 export default function ArchiveDataModal() {
   const [taskInfo, setTaskInfo] = useState<TaskInfo>();

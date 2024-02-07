@@ -1,6 +1,5 @@
 "use client";
 
-import { CurseForgeIcon, ModrinthIcon, SearchIcon } from "@/components/icons";
 import { Card, CardBody } from "@nextui-org/card";
 import { Input } from "@nextui-org/input";
 import { Select, SelectItem } from "@nextui-org/select";
@@ -13,68 +12,53 @@ import { Link } from "@nextui-org/link";
 import { Progress } from "@nextui-org/progress";
 import { useSearchParams } from "next/navigation";
 
+import { CurseForgeIcon, ModrinthIcon, SearchIcon } from "@/components/icons";
 import { ResourceImage } from "./archive/resource";
 import ArchiveDataModal from "./archive/modal";
 import { Spinner } from "@nextui-org/spinner";
-import { ModMetadata } from "@/types/minecraft_mod";
-import { searchMods } from "@/api/search";
+import { useSearchMods } from "@/api/search";
 
 export default function SearchPage() {
-  const [data, setData] = useState<{
-    query?: string;
-    total_pages: number;
-    paged_mods: Record<number, ModMetadata[]>;
-  }>();
   const [query, setQuery] = useState<string>();
   const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const { data, error, isLoading, mutate } = useSearchMods(page, query);
+
+  let openModal = useSearchParams().get("modal") === "data-collection";
+  const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure({
+    defaultOpen: openModal,
+    onClose: () => mutate(),
+  });
 
   useEffect(() => {
-    const skipFetch = data?.paged_mods[page] && data.query === query;
-    if (skipFetch) {
-      return;
+    if (data) {
+      setTotalPages(data.total_pages);
     }
-
-    let ignore = false;
-
-    searchMods(page, query).then((result) => {
-      if (ignore) {
-        return;
-      }
-
-      setData((data) => {
-        return {
-          query,
-          total_pages: result.total_pages,
-          paged_mods: { ...data?.paged_mods, [page]: result.mods },
-        };
-      });
-    });
-
-    return () => {
-      ignore = true;
-    };
-  }, [page, data, query]);
+  }, [data]);
 
   function ModList() {
-    const mods = data?.paged_mods[page];
-    if (!data || !mods) {
-      return <Spinner label="載入中" size="lg" />;
+    if (isLoading || !data || error) {
+      return <Spinner className="w-full" label="載入中" size="lg" />;
     }
 
-    if (mods.length === 0) {
+    if (data.mods.length === 0) {
       return (
         <p className="text-center">
           找不到名為「{query}」的模組。
           <br />
-          可能是因為該模組未收錄於 RTranslator
-          的資料庫內，建議您可以嘗試建檔該模組。
+          可能是因為該模組未收錄於本平臺的資料庫內，建議您可以
+          <Link className="cursor-pointer" onPress={onOpen}>
+            嘗試建檔
+          </Link>
+          該模組。
         </p>
       );
     }
 
     return (
       <section className="w-full flex flex-col gap-2">
-        {mods.map((mod) => (
+        {data.mods.map((mod) => (
           <Card
             key={mod.id}
             className="flex flex-row justify-between items-center p-4 mx-3"
@@ -153,10 +137,11 @@ export default function SearchPage() {
           setPage(0);
           setQuery(value);
         }}
+        openModal={onOpen}
       />
-      {data && data.total_pages > 0 && (
+      {totalPages > 0 && (
         <Pagination
-          total={data.total_pages}
+          total={totalPages}
           initialPage={1}
           page={page + 1}
           size="lg"
@@ -164,20 +149,29 @@ export default function SearchPage() {
         />
       )}
       <ModList />
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        onClose={onClose}
+        size="4xl"
+        backdrop="blur"
+        scrollBehavior="normal"
+        hideCloseButton
+        isDismissable={false}
+      >
+        <ArchiveDataModal />
+      </Modal>
     </div>
   );
 }
 
 function SearchFilter({
   onQueryChanged,
+  openModal,
 }: {
   onQueryChanged: (value: string) => void;
+  openModal: () => void;
 }): JSX.Element {
-  let openModal = useSearchParams().get("modal") === "data-collection";
-  const { isOpen, onOpen, onOpenChange } = useDisclosure({
-    defaultOpen: openModal,
-  });
-
   return (
     <Card fullWidth>
       <CardBody className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -214,19 +208,8 @@ function SearchFilter({
             color="primary"
             content="從各大模組平臺匯入您想翻譯的模組資料"
           >
-            <Button onPress={onOpen}>建檔更多資料</Button>
+            <Button onPress={openModal}>建檔更多資料</Button>
           </Tooltip>
-          <Modal
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-            size="4xl"
-            backdrop="blur"
-            scrollBehavior="normal"
-            hideCloseButton
-            isDismissable={false}
-          >
-            <ArchiveDataModal />
-          </Modal>
         </div>
       </CardBody>
     </Card>

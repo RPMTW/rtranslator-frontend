@@ -40,7 +40,7 @@ export default function Footer() {
             title="RPMTW Official Website"
           >
             <span className="text-default-600 font-semibold">
-              Copyright © 2023 RPMTW TEAM. All rights reserved.
+              Copyright © 2024 RPMTW TEAM. All rights reserved.
             </span>
           </Link>
         </div>

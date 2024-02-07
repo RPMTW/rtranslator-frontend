@@ -34,3 +34,9 @@ export async function fetchData(
 
   return response;
 }
+
+export const fetcher = ([method, path, options]: [
+  method: HttpMethod,
+  path: string,
+  options?: FetchOptions
+]) => fetchData(method, path, options).then((res) => res.json());
