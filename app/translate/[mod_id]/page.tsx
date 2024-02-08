@@ -14,6 +14,8 @@ import { ModMetadata } from "@/types/minecraft_mod";
 import { TextEntry } from "@/types/text_entry";
 import { useModEntries } from "@/api/search";
 import { getModMetadata } from "@/api/metadata";
+import { Divider } from "@nextui-org/divider";
+import { Textarea } from "@nextui-org/input";
 
 export default function TranslatePage({
   params,
@@ -22,6 +24,7 @@ export default function TranslatePage({
 }) {
   const mod_id = parseInt(params.mod_id);
   const [metadata, setMetadata] = useState<ModMetadata>();
+  const [selected, setSelected] = useState<TextEntry>();
 
   useEffect(() => {
     getModMetadata(mod_id).then((result) => {
@@ -33,9 +36,31 @@ export default function TranslatePage({
     };
   }, [mod_id]);
 
+  const [query, setQuery] = useState<string>();
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState<number>();
+  const { data, isLoading } = useModEntries(mod_id, page, query);
+
+  useEffect(() => {
+    if (data) {
+      setTotalPages(data.total_pages);
+
+      if (!selected || !data.entries.includes(selected)) {
+        setSelected(data.entries[0]);
+      }
+    }
+  }, [data, selected]);
+
+  function changePage(page: number) {
+    if (!totalPages || page >= totalPages) return;
+    if (page < 0) return;
+
+    setPage(page);
+  }
+
   return (
-    <section className="flex flex-row h-full">
-      <Card className="w-1/4 h-full px-4 py-2" radius="none">
+    <Card className="flex flex-row h-full">
+      <Card className="w-1/4 h-full px-4 py-2">
         <CardHeader>
           <Skeleton isLoaded={metadata != null} className="rounded-lg w-full">
             <div className="flex flex-row justify-between gap-4">
@@ -64,86 +89,83 @@ export default function TranslatePage({
             </div>
           </Skeleton>
         </CardHeader>
-        <EntriesList mod_id={mod_id} />
+        <div className="flex h-full flex-col justify-between overflow-y-auto">
+          {isLoading ? (
+            <Skeleton className="rounded-lg h-full" />
+          ) : (
+            <EntriesList
+              entries={data!.entries}
+              selected={selected}
+              onSelect={setSelected}
+            />
+          )}
+          <CardFooter className="flex justify-center mb-1">
+            <ButtonGroup variant="ghost">
+              <Button onPress={() => changePage(page - 1)}>上一頁</Button>
+              <Button>
+                {page + 1} / {totalPages || 1}
+              </Button>
+              <Button onPress={() => changePage(page + 1)}>下一頁</Button>
+            </ButtonGroup>
+          </CardFooter>
+        </div>
       </Card>
-      <Card className="w-2/4 px-4 py-2" radius="none">
-        B
-      </Card>
-      <Card className="w-1/4 px-4 py-2" radius="none">
-        C
-      </Card>
-    </section>
+      <Divider orientation="vertical" />
+      <div className="w-2/4">
+        {selected ? (
+          <>
+            <div className="h-1/3 px-4 py-2">
+              <div className="h-1/2">
+                <p className="text-md text-gray-400">文字條目翻譯</p>
+                <h1 className="text-xl my-5">{selected.value}</h1>
+                <p className="text-gray-400">識別碼：{selected.key}</p>
+              </div>
+              <div className="h-1/2">
+                <p className="text-md text-gray-400">翻文</p>
+                <Textarea size="lg" variant="faded"></Textarea>
+              </div>
+            </div>
+          </>
+        ) : (
+          <Skeleton className="rounded-lg h-1/3" />
+        )}
+        <Divider />
+        <div className="h-2/3 px-4 py-2">B Block</div>
+      </div>
+      <Divider orientation="vertical" />
+      <div className="w-1/4 px-4 py-2">C</div>
+    </Card>
   );
 }
 
-function EntriesList({ mod_id }: { mod_id: number }) {
-  const [query, setQuery] = useState<string>();
-  const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState<number>();
-  const [selected, setSelected] = useState<string>();
-
-  function Body({ page, cache = false }: { page: number; cache?: boolean }) {
-    const { data, error, isLoading } = useModEntries(mod_id, page, query);
-
-    useEffect(() => {
-      if (cache) return;
-      if (data) {
-        setTotalPages(data.total_pages);
-
-        if (!selected || !data.entries.map((e) => e.key).includes(selected)) {
-          setSelected(data.entries[0].key);
-        }
-      }
-    }, [data, cache]);
-
-    return (
-      <CardBody className="flex flex-col">
-        {!isLoading &&
-          data?.entries.map((item) => (
-            <Button
-              key={item.key}
-              className="text-md"
-              variant={selected === item.key ? "solid" : "light"}
-              size="lg"
-              radius="sm"
-              startContent={
-                <div className="bg-default-500 rounded-sm min-w-unit-3 h-3"></div>
-              }
-              onPress={() => setSelected(item.key)}
-            >
-              <p className="min-w-full overflow-hidden text-ellipsis text-left">
-                {item.value}
-              </p>
-            </Button>
-          ))}
-        {isLoading && <Skeleton className="rounded-lg h-full" />}
-      </CardBody>
-    );
-  }
-
-  function changePage(page: number) {
-    if (!totalPages || page >= totalPages) return;
-    if (page < 0) return;
-
-    setPage(page);
-  }
-
+function EntriesList({
+  entries,
+  selected,
+  onSelect,
+}: {
+  entries: TextEntry[];
+  selected?: TextEntry;
+  onSelect: (key: TextEntry) => void;
+}) {
   return (
-    <div className="flex h-full flex-col justify-between overflow-y-auto">
-      <Body page={page} />
-      <div className="hidden">
-        # Cache next page
-        <Body page={page + 1} cache />
-      </div>
-      <CardFooter className="flex justify-center mb-1">
-        <ButtonGroup variant="ghost">
-          <Button onPress={() => changePage(page - 1)}>上一頁</Button>
-          <Button>
-            {page + 1} / {totalPages || 1}
-          </Button>
-          <Button onPress={() => changePage(page + 1)}>下一頁</Button>
-        </ButtonGroup>
-      </CardFooter>
-    </div>
+    <CardBody className="flex flex-col">
+      {entries.map((item) => (
+        <Button
+          key={item.key}
+          className="text-md"
+          variant={item === selected ? "solid" : "light"}
+          size="lg"
+          radius="sm"
+          startContent={
+            <div className="bg-default-500 rounded-sm min-w-unit-3 h-3"></div>
+          }
+          onPress={() => onSelect(item)}
+        >
+          <p className="min-w-full overflow-hidden text-ellipsis text-left">
+            {item.value}
+          </p>
+        </Button>
+      ))}
+    </CardBody>
   );
 }

@@ -10,6 +10,7 @@ export enum HttpMethod {
 interface FetchOptions {
   params?: Record<string, string>;
   body?: Record<string, any>;
+  timeout?: boolean;
 }
 
 export async function fetchData(
@@ -32,6 +33,10 @@ export async function fetchData(
     throw new Error(`Failed to fetch data from ${path}`);
   }
 
+  if (options.timeout) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+
   return response;
 }
 
@@ -40,3 +45,8 @@ export const fetcher = ([method, path, options]: [
   path: string,
   options?: FetchOptions
 ]) => fetchData(method, path, options).then((res) => res.json());
+
+export type DataResponse<T> = {
+  data?: T;
+  isLoading: boolean;
+};

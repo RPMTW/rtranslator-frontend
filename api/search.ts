@@ -1,4 +1,4 @@
-import { HttpMethod, fetchData, fetcher } from "@/config/api";
+import { DataResponse, HttpMethod, fetchData, fetcher } from "@/config/api";
 import { ModMetadata } from "@/types/minecraft_mod";
 import { TextEntry } from "@/types/text_entry";
 import useSWR, { SWRResponse } from "swr";
@@ -27,12 +27,18 @@ export function useModEntries(
   mod_id: number,
   page: number,
   query?: string
-): SWRResponse<SearchEntriesResponse> {
+): DataResponse<SearchEntriesResponse> {
   const params: Record<string, string> = { page: page.toString() };
   if (query) params["query"] = query;
 
-  return useSWR(
-    [HttpMethod.GET, `/mods/${mod_id}/entries`, { params }],
+  const { data, error, isLoading } = useSWR(
+    [
+      HttpMethod.GET,
+      `/mods/${mod_id}/entries`,
+      { params, timeout: page !== 0 },
+    ],
     fetcher
   );
+
+  return { data, isLoading: isLoading || !data || error };
 }
