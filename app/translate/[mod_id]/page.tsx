@@ -1,7 +1,5 @@
 "use client";
 
-import "material-symbols";
-
 import { useEffect, useState } from "react";
 import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/card";
 import { Progress } from "@nextui-org/progress";
@@ -15,7 +13,13 @@ import { TextEntry } from "@/types/text_entry";
 import { useModEntries } from "@/api/search";
 import { getModMetadata } from "@/api/metadata";
 import { Divider } from "@nextui-org/divider";
-import { Textarea } from "@nextui-org/input";
+import { Tab, Tabs } from "@nextui-org/tabs";
+import {
+  IconBulbFilled,
+  IconDots,
+  IconMessage,
+  IconShare3,
+} from "@tabler/icons-react";
 
 export default function TranslatePage({
   params,
@@ -60,7 +64,7 @@ export default function TranslatePage({
 
   return (
     <Card className="flex flex-row h-full">
-      <Card className="w-1/4 h-full px-4 py-2">
+      <Card className="w-1/4 h-full px-4 py-2" radius="none">
         <CardHeader>
           <Skeleton isLoaded={metadata != null} className="rounded-lg w-full">
             <div className="flex flex-row justify-between gap-4">
@@ -79,11 +83,11 @@ export default function TranslatePage({
                   isIconOnly
                   onClick={() =>
                     navigator.clipboard.writeText(
-                      `${location.host}/translate/${mod_id}`
+                      `${location.host}/translate/${mod_id}?selected=${selected?.key}`
                     )
                   }
                 >
-                  <span className="material-symbols-outlined">share</span>
+                  <IconShare3 />
                 </Button>
               </Tooltip>
             </div>
@@ -114,26 +118,65 @@ export default function TranslatePage({
       <div className="w-2/4">
         {selected ? (
           <>
-            <div className="h-1/3 px-4 py-2">
-              <div className="h-1/2">
+            <div>
+              <div className="p-5">
                 <p className="text-md text-gray-400">文字條目翻譯</p>
-                <h1 className="text-xl my-5">{selected.value}</h1>
-                <p className="text-gray-400">識別碼：{selected.key}</p>
+                <h1 className="text-xl py-2">{selected.value}</h1>
+                <p className="text-gray-400 bottom-4">識別碼：{selected.key}</p>
               </div>
-              <div className="h-1/2">
-                <p className="text-md text-gray-400">翻文</p>
-                <Textarea size="lg" variant="faded"></Textarea>
+              <Divider />
+              <div className="relative h-[8rem]">
+                <textarea
+                  className="h-full w-full resize-none bg-default-100 px-4 py-2 outline-none"
+                  placeholder="請輸入譯文"
+                ></textarea>
+                <Button
+                  className="absolute bottom-3 right-4"
+                  variant="bordered"
+                >
+                  儲存
+                </Button>
               </div>
             </div>
           </>
         ) : (
-          <Skeleton className="rounded-lg h-1/3" />
+          <Skeleton className="h-1/3" />
         )}
         <Divider />
-        <div className="h-2/3 px-4 py-2">B Block</div>
+        <div className="px-4 py-2">B Block</div>
       </div>
       <Divider orientation="vertical" />
-      <div className="w-1/4 px-4 py-2">C</div>
+      <div className="w-1/4 px-4 py-2">
+        <Tabs size="lg" variant="bordered" fullWidth>
+          <Tab
+            key="comments"
+            title={
+              <div className="flex items-center space-x-2">
+                <IconMessage />
+                <span>評論</span>
+              </div>
+            }
+          ></Tab>
+          <Tab
+            key="tools"
+            title={
+              <div className="flex items-center space-x-2">
+                <IconBulbFilled />
+                <span>輔助工具</span>
+              </div>
+            }
+          ></Tab>
+          <Tab
+            key="more"
+            title={
+              <div className="flex items-center space-x-2">
+                <IconDots />
+                <span>更多</span>
+              </div>
+            }
+          ></Tab>
+        </Tabs>
+      </div>
     </Card>
   );
 }

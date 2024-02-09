@@ -22,7 +22,7 @@ export default function Home() {
             設計的翻譯平臺
           </h1>
           <h2 className={subtitle({ class: "mt-4" })}>
-            簡潔有力、現代化且貼合模組譯者體驗的翻譯平臺。
+            簡潔有力、現代化、貼合模組譯者體驗的翻譯平臺。
           </h2>
         </div>
 
