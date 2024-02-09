@@ -153,7 +153,7 @@ export default function TranslatePage({
             title={
               <div className="flex items-center space-x-2">
                 <IconMessage />
-                <span>評論</span>
+                <span>討論</span>
               </div>
             }
           ></Tab>
