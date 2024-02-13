@@ -40,7 +40,7 @@ export default function SearchPage() {
 
   function ModList() {
     if (isLoading || !data || error) {
-      return <Spinner className="w-full" label="載入中" size="lg" />;
+      return <Spinner className="w-full mt-2" label="載入中" size="lg" />;
     }
 
     if (data.mods.length === 0) {

@@ -94,8 +94,7 @@ export default function TranslatePage({
           </Skeleton>
         </CardHeader>
         <div className="flex h-full flex-col justify-between overflow-y-auto">
-          {isLoading ? (
-            <Skeleton className="rounded-lg h-full" />
+          {isLoading ? (<div className="p-3 space-y-3"><Skeleton className="h-14 mb-5 rounded-lg" /><Skeleton className="h-12 rounded-lg" /><Skeleton className="h-12 rounded-lg" /><Skeleton className="h-12 rounded-lg" /><Skeleton className="h-12 rounded-lg" /><Skeleton className="h-12 rounded-lg" /><Skeleton className="h-12 rounded-lg" /><Skeleton className="h-12 rounded-lg" /><Skeleton className="h-12 rounded-lg" /><Skeleton className="h-12 rounded-lg" /><Skeleton className="h-12 rounded-lg" /><Skeleton className="h-12 rounded-lg" /></div>
           ) : (
             <EntriesList
               entries={data!.entries}
@@ -116,34 +115,7 @@ export default function TranslatePage({
       </Card>
       <Divider orientation="vertical" />
       <div className="w-2/4">
-        {selected ? (
-          <>
-            <div>
-              <div className="p-5">
-                <p className="text-md text-gray-400">文字條目翻譯</p>
-                <h1 className="text-xl py-2">{selected.value}</h1>
-                <p className="text-gray-400 bottom-4">識別碼：{selected.key}</p>
-              </div>
-              <Divider />
-              <div className="relative h-[8rem]">
-                <textarea
-                  className="h-full w-full resize-none bg-default-100 px-4 py-2 outline-none"
-                  placeholder="請輸入譯文"
-                ></textarea>
-                <Button
-                  className="absolute bottom-3 right-4"
-                  variant="bordered"
-                >
-                  儲存
-                </Button>
-              </div>
-            </div>
-          </>
-        ) : (
-          <Skeleton className="h-1/3" />
-        )}
-        <Divider />
-        <div className="px-4 py-2">B Block</div>
+        {selected ? <TranslateSpace selected={selected} /> : <div className="p-5"><div className="space-y-3"><Skeleton className="h-6 w-[10rem] rounded-lg" /><Skeleton className="h-10 w-[90%] rounded-lg" /><Skeleton className="h-6 w-[25rem] rounded-lg" /></div><div></div></div>}
       </div>
       <Divider orientation="vertical" />
       <div className="w-1/4 px-4 py-2">
@@ -211,4 +183,30 @@ function EntriesList({
       ))}
     </CardBody>
   );
+}
+
+function TranslateSpace({ selected }: { selected: TextEntry }) {
+  return (<>
+    <div>
+      <div className="p-5">
+        <p className="text-md text-gray-400">文字條目翻譯</p>
+        <h1 className="text-xl py-2">{selected.value}</h1>
+        <p className="text-gray-400 bottom-4">識別碼：{selected.key}</p>
+      </div>
+      <Divider />
+      <div className="relative h-[8rem]">
+        <textarea
+          className="h-full w-full resize-none bg-default-100 px-4 py-2 outline-none"
+          placeholder="請輸入譯文"
+        ></textarea>
+        <Button
+          className="absolute bottom-3 right-4"
+          variant="bordered"
+        >
+          儲存
+        </Button>
+      </div>
+    </div>
+    <Divider />
+    <div className="px-4 py-2">B Block</div></>)
 }
